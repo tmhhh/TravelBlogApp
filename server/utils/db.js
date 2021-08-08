@@ -39,5 +39,35 @@ module.exports = {
       });
     });
   },
+  update: (table, entity, condition) => {
+    return new Promise((resolve, reject) => {
+      const query = `UPDATE ${table} SET ? WHERE ?`;
+      connection.query(query, [entity, condition], (err, results) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(results);
+      });
+    });
+  },
+  optionalUpdate: (query, condition) => {
+    return new Promise((resolve, reject) => {
+      connection.query(query, condition, (err, results) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(results);
+      });
+    });
+  },
+  remove: (table, condition) => {
+    return new Promise((resolve, reject) => {
+      const query = `DELETE FROM ${table} where ?`;
+      connection.query(query, condition, (err, results) => {
+        if (err) reject(err);
+        resolve(results);
+      });
+    });
+  },
 };
 // module.exports = connection;
