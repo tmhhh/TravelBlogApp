@@ -37,8 +37,8 @@ module.exports = {
         else res.status(500).json("Error");
       } else res.status(500).json("Error");
     } catch (err) {
-      console.log("catch");
       console.log(err);
+      res.status(400).json({ isSuccess: false, error });
     }
   },
   editBlog: async (req, res) => {
@@ -48,6 +48,7 @@ module.exports = {
         blogContent: req.body.content,
         blogTitle: req.body.title,
       };
+      console.log(Blog);
       var blogImage = "";
       if (req.files) {
         const imageName = req.files.picture.name.split(".");
@@ -63,20 +64,17 @@ module.exports = {
         Blog.blogImage = blogImage;
         const check = await blogModel.editBlog(Blog, req.body.id);
         if (check.affectedRows <= 0) {
-          console.log("no");
           return res.status(500).json("Error");
         } else {
-          console.log("yes");
-          return res.status(200).json({ isSuccess: true, newBlog: Blog });
+          return res.status(200).json({ isSuccess: true, updatedBlog: Blog });
         }
       } else {
         const check = await blogModel.editBlog(Blog, req.body.id);
         if (check.affectedRows <= 0) {
-          console.log("no");
           return res.status(500).json("Error");
         } else {
-          console.log("yes");
-          return res.status(200).json({ isSuccess: true, newBlog: Blog });
+          console.log(Blog);
+          return res.status(200).json({ isSuccess: true, updatedBlog: Blog });
         }
       }
     } catch (err) {
@@ -94,6 +92,7 @@ module.exports = {
       return res.status(200).json({ isSuccess: true });
     } catch (error) {
       console.log(error);
+      res.status(500).json({ isSuccess: false, error: "Server error" });
     }
   },
   updateBlogLike: async (req, res) => {
@@ -106,6 +105,19 @@ module.exports = {
       return res.status(200).json({ isSuccess: true });
     } catch (error) {
       console.log(error);
+      res.status(500).json({ isSuccess: false, error: "Server error" });
+    }
+  },
+  searchBlog: async (req, res) => {
+    if (!req.query.title)
+      res.status(400).json({ isSuccess: false, error: "error" });
+    try {
+      const check = await blogModel.searchBlog(req.query.title);
+      console.log(check);
+      res.status(200).json({ isSuccess: true, listBlogs: check });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ isSuccess: false, error });
     }
   },
 };

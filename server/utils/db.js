@@ -15,6 +15,20 @@ connection.connect(function (err) {
   console.log("connected as id " + connection.threadId);
 });
 module.exports = {
+  getWithCondition: (table, condition) => {
+    return new Promise((resolve, reject) => {
+      const query = connection.query(
+        `Select * from ${table} where ?`,
+        condition,
+        (error, results) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(results);
+        }
+      );
+    });
+  },
   getAll: (table) => {
     return new Promise((resolve, reject) => {
       const query = connection.query(
@@ -64,6 +78,14 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const query = `DELETE FROM ${table} where ?`;
       connection.query(query, condition, (err, results) => {
+        if (err) reject(err);
+        resolve(results);
+      });
+    });
+  },
+  search: (query, condition) => {
+    return new Promise((resolve, reject) => {
+      connection.query(query, (err, results) => {
         if (err) reject(err);
         resolve(results);
       });

@@ -9,5 +9,6 @@ route.post("/Blogs/add", blogController.addBlog);
 route.post("/Blogs/edit", blogController.editBlog);
 route.post("/Blogs/delete", blogController.deleteBlog);
 route.get("/Blogs/like", blogController.updateBlogLike);
+route.get("/Blogs/search", blogController.searchBlog);
 route.get("/Blogs", blogController.getAllBlogs);
 module.exports = route;

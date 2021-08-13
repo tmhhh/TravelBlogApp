@@ -4,6 +4,8 @@ const {
   update,
   remove,
   optionalUpdate,
+  getWithCondition,
+  search,
 } = require("../utils/db");
 const table = "blog";
 module.exports = {
@@ -17,7 +19,7 @@ module.exports = {
     const condition = {
       blogID,
     };
-    delete blog.blogID;
+    // delete blog.blogID;
 
     return update(table, blog, condition);
   },
@@ -27,5 +29,10 @@ module.exports = {
   updateBlogLike: (blogID) => {
     const query = `UPDATE ${table} SET blogLike=blogLike+1 WHERE ?`;
     return optionalUpdate(query, { blogID });
+  },
+  searchBlog: (blogTitle) => {
+    const query = `SELECT * FROM ${table} where blogTitle LIKE "%${blogTitle}%"`;
+    console.log(query);
+    return search(query, blogTitle);
   },
 };
