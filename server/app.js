@@ -1,12 +1,14 @@
 const express = require("express");
-
 const fileUpload = require("express-fileupload");
 const DatauriParser = require("datauri/parser");
 const parser = new DatauriParser();
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 const path = require("path");
 const cors = require("cors");
+require("dotenv").config({ path: "./.env" });
+
 app.use(
   fileUpload({
     createParentPath: true,
@@ -16,7 +18,9 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use("/", require("./routes/main.route"));
+
+//ROUTE
+require("./routes/index.route")(app);
 
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
