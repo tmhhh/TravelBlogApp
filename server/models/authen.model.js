@@ -7,4 +7,7 @@ module.exports = {
   userRegister: (user) => {
     return db.insert(table, user);
   },
+  checkUserID: (userID) => {
+    return db.getWithCondition(table, { userID });
+  },
 };

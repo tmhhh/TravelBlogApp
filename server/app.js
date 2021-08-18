@@ -22,12 +22,12 @@ app.use(express.json());
 //ROUTE
 require("./routes/index.route")(app);
 
-const cloudinary = require("cloudinary").v2;
-cloudinary.config({
-  cloud_name: "coffeehouse",
-  api_key: "383993481697725",
-  api_secret: "OEUbE2t6HBpDgDXNBIcQVRqEscA",
-});
+// const cloudinary = require("cloudinary").v2;
+// cloudinary.config({
+//   cloud_name: "coffeehouse",
+//   api_key: "383993481697725",
+//   api_secret: "OEUbE2t6HBpDgDXNBIcQVRqEscA",
+// });
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

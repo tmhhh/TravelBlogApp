@@ -4,6 +4,22 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 module.exports = {
+  verifyUser: async (req, res) => {
+    try {
+      console.log("verify");
+      const token = req.headers.authorization;
+      const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
+      const user = await authenModel.checkUserID(decodedToken);
+      if (!user[0])
+        return res
+          .status(401)
+          .json({ isSuccess: false, error: "User unknown" });
+      return res.status(200).json({ isSuccess: true, user: user[0] });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ isSuccess: false, error: "Server error" });
+    }
+  },
   userLogin: async (req, res) => {
     try {
       const username = req.body.username;
