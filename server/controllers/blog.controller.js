@@ -2,15 +2,16 @@ const blogModel = require("../models/blog.model");
 const cloudinaryMdw = require("../middlewares/cloudinary.mdw");
 const DatauriParser = require("datauri/parser");
 const parser = new DatauriParser();
+const { v4: uuidv4 } = require("uuid");
 module.exports = {
   getAllBlogs: async (req, res, next) => {
-    console.log("ctl");
     try {
       const blogs = await blogModel.getAllBlogs();
       // console.log(blogs);
-      res.status(200).json(blogs);
+      res.status(200).json({ isSuccess: true, listBlogs: blogs });
     } catch (err) {
       console.log(err);
+      res.status(500).json({ isSuccess: true, error: "Server error" });
       next();
     }
   },
@@ -25,7 +26,7 @@ module.exports = {
       const cloudRes = await cloudinaryMdw.uploadImage(blogImage);
       if (Object.keys(cloudRes).length > 0) {
         const Blog = {
-          blogID: req.body.id,
+          blogID: uuidv4(),
           blogContent: req.body.content,
           blogTitle: req.body.title,
           blogImage: cloudRes.url,
@@ -38,7 +39,7 @@ module.exports = {
       } else res.status(500).json("Error");
     } catch (err) {
       console.log(err);
-      res.status(400).json({ isSuccess: false, error });
+      res.status(400).json({ isSuccess: false, error: err });
     }
   },
   editBlog: async (req, res) => {
@@ -82,7 +83,8 @@ module.exports = {
     }
   },
   deleteBlog: async (req, res) => {
-    if (!req.body.id) return res.status(400).json({ isSuccess: false });
+    if (!req.body.id)
+      return res.status(400).json({ isSuccess: false, error: "User error" });
     try {
       console.log(req.body.id);
       const blogID = req.body.id;
@@ -96,9 +98,9 @@ module.exports = {
     }
   },
   updateBlogLike: async (req, res) => {
-    if (!req.query.id) return res.status(400).json({ isSuccess: false });
+    if (!req.body.id) return res.status(400).json({ isSuccess: false });
     try {
-      const blogID = req.query.id;
+      const blogID = req.body.id;
       const check = blogModel.updateBlogLike(blogID);
       if (check.affectedRows <= 0)
         return res.status(500).json({ isSuccess: false });
